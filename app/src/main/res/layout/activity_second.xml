@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SecondActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <component.kits.view.ExpandFrameLayout
+                android:id="@+id/expand_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:expand_anim_duration="200"
+                app:expand_bottom_root_id="@id/bottom_root"
+                app:expand_bottom_layout="@layout/expand_ove"
+                app:expand_max_line="10"
+                app:expand_textView_id="@id/tv_frame">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </component.kits.view.ExpandFrameLayout>
+
+            <!-- 占坑的 -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_span2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 被折叠的textview id -->
+    <attr name="expand_textView_id" format="reference"/>
+    <!-- 被折叠textview底部的自定义布局, 允许为空 -->
+    <attr name="expand_bottom_layout" format="reference"/>
+    <!-- 被折叠textview底部的自定义布局root_id, 用于设置点击及内部排版 -->
+    <attr name="expand_bottom_root_id" format="reference"/>
+    <!-- 收起后可显示的最大行数 -->
+    <attr name="expand_max_line" format="integer"/>
+    <!-- 折叠动画时长 -->
+    <attr name="expand_anim_duration" format="integer"/>
+
+    <declare-styleable name="ExpandLinearLayout">
+        <attr name="expand_textView_id"/>
+        <attr name="expand_max_line"/>
+        <attr name="expand_anim_duration"/>
+        <attr name="expand_bottom_layout"/>
+    </declare-styleable>
+
+    <declare-styleable name="ExpandFrameLayout">
+        <attr name="expand_textView_id"/>
+        <attr name="expand_max_line"/>
+        <attr name="expand_anim_duration"/>
+        <attr name="expand_bottom_layout"/>
+        <attr name="expand_bottom_root_id"/>
+    </declare-styleable>
+</resources>
