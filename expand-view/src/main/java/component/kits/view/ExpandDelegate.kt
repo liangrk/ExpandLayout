@@ -51,6 +51,11 @@ class ExpandDelegate(
 
     var onCollapseListener: OnExpandStateListener? = null
 
+    /**
+     * 额外的偏移量
+     */
+    private var diff: Int = 0
+
     fun inflateTextView(view: TextView) {
         textView = view
     }
@@ -67,10 +72,12 @@ class ExpandDelegate(
      * @param onChange layout中重新super.onMeasure测量 返回layout的measureHeight.
      */
     fun measureTextHeight(viewGroup: ViewGroup, onChange: (() -> Int)) {
-        if (textView.lineCount < maxLine) {
+        if (textView.lineCount <= maxLine) {
             // 当前文本行数没有超出指定的行数
+            bottomLayout?.visibility = View.GONE
             return
         }
+        bottomLayout?.visibility = View.VISIBLE
         realTotalHeight = getTextViewRealHeight(textView)
         if (collapseState) {
             // 收起时, 需要设置允许最大的行数
@@ -79,13 +86,20 @@ class ExpandDelegate(
         // 调用super.onMeasure进行测量 返回测量的高度
         val measureHeight = onChange()
         if (collapseState) {
-            textView.post { marginBetweenTxtAndBottom = viewGroup.height - textView.height  }
+            textView.post { marginBetweenTxtAndBottom = viewGroup.height - textView.height }
             collapseHeight = measureHeight
         }
     }
 
-    fun setOnClick(force:Boolean = false) {
-        val listener = if (force) this else null
+    /**
+     * 设置点击事件, 是否允许点击textview开始折叠
+     * 默认没有底部layout时允许点击
+     * @param force 是否强制允许textview响应点击事件
+     * @param diff 设置展开动画的偏移量, 默认为0 按所需展开 单位px
+     */
+    fun setOnClick(force: Boolean = false, diff: Int = 0) {
+        this.diff = diff
+        val listener = if (force || bottomLayout == null) this else null
         textView.setOnClickListener(listener)
         bottomLayout?.setOnClickListener(this)
     }
@@ -107,6 +121,7 @@ class ExpandDelegate(
             .clear()
             .start {
                 val change = it.animatedValue as Int
+                println("变化值:$change")
                 // 动画变化
                 when (change - collapseHeight) {
                     0 -> {

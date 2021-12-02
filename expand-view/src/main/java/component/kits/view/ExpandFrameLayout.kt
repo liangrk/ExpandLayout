@@ -4,8 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 
@@ -18,7 +19,11 @@ class ExpandFrameLayout @JvmOverloads constructor(
 
     private var expandTextViewId: Int = -1
     private var expandBottomLayoutRes: Int = -1
-    private var expandBottomRootId:Int = -1
+    private var expandWidth: Int = LayoutParams.MATCH_PARENT
+    private var expandHeight: Int = ViewGroup.LayoutParams.WRAP_CONTENT
+
+    private var collapseWidth: Int = LayoutParams.MATCH_PARENT
+    private var collapseHeight: Int = ViewGroup.LayoutParams.WRAP_CONTENT
 
     init {
         initAttr(attrs)
@@ -31,12 +36,27 @@ class ExpandFrameLayout @JvmOverloads constructor(
         val maxLine = typeArray.getInt(R.styleable.ExpandFrameLayout_expand_max_line, 10)
         val duration = typeArray.getInt(R.styleable.ExpandFrameLayout_expand_anim_duration, 300)
 
+        expandWidth = typeArray.getLayoutDimension(
+            R.styleable.ExpandFrameLayout_expand_bottom_width,
+            LayoutParams.MATCH_PARENT
+        )
+        expandHeight = typeArray.getLayoutDimension(
+            R.styleable.ExpandFrameLayout_expand_bottom_height,
+            LayoutParams.WRAP_CONTENT
+        )
+        collapseWidth = typeArray.getLayoutDimension(
+            R.styleable.ExpandFrameLayout_expand_collapse_width,
+            expandWidth
+        )
+        collapseHeight = typeArray.getLayoutDimension(
+            R.styleable.ExpandFrameLayout_expand_collapse_height,
+            expandHeight
+        )
+
         expandTextViewId =
             typeArray.getResourceId(R.styleable.ExpandFrameLayout_expand_textView_id, -1)
         expandBottomLayoutRes =
             typeArray.getResourceId(R.styleable.ExpandFrameLayout_expand_bottom_layout, -1)
-        expandBottomRootId =
-            typeArray.getResourceId(R.styleable.ExpandFrameLayout_expand_bottom_root_id, -1)
         expandDelegate = ExpandDelegate(maxLine, duration)
         typeArray.recycle()
     }
@@ -50,16 +70,24 @@ class ExpandFrameLayout @JvmOverloads constructor(
         expandDelegate.inflateTextView(targetTextView)
         try {
             if (expandBottomLayoutRes > 0) {
-                val bottomView = inflate(context, expandBottomLayoutRes, this)
-                    .findViewById<View>(expandBottomRootId)
+                val bottomView = LayoutInflater.from(context)
+                    .inflate(expandBottomLayoutRes, null)
+                val params = LayoutParams(expandWidth, expandHeight)
+                params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                bottomView.layoutParams = params
+                addView(bottomView)
                 expandDelegate.bottomLayout = bottomView
-            }
-        } catch (ignore: Exception) {
-            // ignore bottom layout added err
-            ignore.printStackTrace()
-        }
 
-        expandDelegate.setOnClick()
+                bottomView.post {
+                    expandDelegate.setOnClick(diff = bottomView.measuredHeight)
+                }
+            } else {
+                expandDelegate.setOnClick()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            expandDelegate.setOnClick()
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -78,13 +106,6 @@ class ExpandFrameLayout @JvmOverloads constructor(
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             measuredHeight
         }
-    }
-
-    /**
-     * 设置允许textview点击展开
-     */
-    fun setArrowTextClick() {
-        expandDelegate.setOnClick(force = true)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {

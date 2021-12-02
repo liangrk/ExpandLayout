@@ -24,8 +24,9 @@
                 android:id="@+id/expand_frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:expand_bottom_width="360dp"
+                app:expand_bottom_height="100dp"
                 app:expand_anim_duration="200"
-                app:expand_bottom_root_id="@id/bottom_root"
                 app:expand_bottom_layout="@layout/expand_ove"
                 app:expand_max_line="10"
                 app:expand_textView_id="@id/tv_frame">
