@@ -9,15 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EpDemo">
+
         <activity
-            android:name=".SecondActivity"
-            android:exported="true" >
+            android:name=".ScrollActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SecondActivity"
+            android:exported="true">
+
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
