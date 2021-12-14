@@ -33,7 +33,7 @@ class ExpandAnimation(
     ): Boolean {
         if (isRunning()) return false
 
-        val expandIntent = startHeight > endHeight
+        val expandIntent = startHeight < endHeight
         animation = ValueAnimator.ofInt(startHeight, endHeight)
         animation!!.duration = duration
         animation!!.interpolator = AccelerateDecelerateInterpolator()

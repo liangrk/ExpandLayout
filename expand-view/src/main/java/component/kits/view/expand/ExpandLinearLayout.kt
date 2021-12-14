@@ -40,30 +40,11 @@ class ExpandLinearLayout @JvmOverloads constructor(
     private var bottomLayout: View? = null
 
     /**
-     * 是否需要重新测量
-     * 对应 [textView] 是否重新设置了maxLines
-     */
-    private var isRevisitMeasure = true
-
-    /**
-     * [textView] 有数据无折叠的真实高度
-     */
-    private var realTotalTextHeight = -1
-
-    /**
-     * [textView] 折叠 [collapseMaxLine] 行后剩余的高度
-     */
-    private var collapseTextHeight = -1
-
-    /**
      * 收起的标志. 用于在 onMeasure 时限制 [textView] 的最大行数
      */
     private var collapseState = true
 
-    /**
-     * 用于记录 [textView] 与 parent 间距
-     */
-    private var textViewPadding = -1
+    private lateinit var measureDelegate: ExpandMeasureDelegate
 
     private var onExpand: ExpandFunction? = null
     private var onCollapse: ExpandFunction? = null
@@ -89,36 +70,6 @@ class ExpandLinearLayout @JvmOverloads constructor(
         typeArr.recycle()
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (!isRevisitMeasure || visibility == GONE) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-            return
-        }
-
-        isRevisitMeasure = false
-        // 获取最大高度.
-        textView?.maxLines = Int.MAX_VALUE
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        realTotalTextHeight = ViewKits.measureTestViewHeight(textView)
-
-        if (textView!!.lineCount <= collapseMaxLine) {
-            // 当前内容行数少于指定行数
-            bottomLayout?.visibility = GONE
-            return
-        }
-
-        // 获取最小的高度.
-        bottomLayout?.visibility = VISIBLE
-        if (collapseState) {
-            textView?.maxLines = collapseMaxLine
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        }
-        textView?.post {
-            textViewPadding = this.height - (textView?.height ?: 0)
-        }
-        collapseTextHeight = measuredHeight - (bottomLayout?.height ?: 0)
-    }
-
     override fun onFinishInflate() {
         super.onFinishInflate()
 
@@ -139,6 +90,9 @@ class ExpandLinearLayout @JvmOverloads constructor(
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
         }
+
+        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
     }
 
     override fun setOrientation(orientation: Int) {
@@ -173,8 +127,7 @@ class ExpandLinearLayout @JvmOverloads constructor(
         onCollapse: ExpandFunction? = null
     ) {
         textView?.text = charSequence
-        addExpandCollapseObserver(onExpand,onCollapse)
-        isRevisitMeasure = true
+        addExpandCollapseObserver(onExpand, onCollapse)
     }
 
     private var onIntercept = false
@@ -189,24 +142,24 @@ class ExpandLinearLayout @JvmOverloads constructor(
      * 2.动画播放
      */
     private val safeListener = OnClickListener {
-        if (onIntercept) return@OnClickListener
+        // 因 measureDelegate 采用延迟声明 注意此处必须加上expandBottomLayoutRes的判断
+        if (onIntercept || expandBottomLayoutRes < 0) return@OnClickListener
         onIntercept = true
         val params = textView!!.layoutParams
         val startHeight = if (collapseState) {
-            collapseTextHeight
+            measureDelegate.collapseHeight
         } else {
-            realTotalTextHeight
+            measureDelegate.realTotalHeight
         }
         val endHeight = if (collapseState) {
-            realTotalTextHeight
+            measureDelegate.realTotalHeight
         } else {
-            collapseTextHeight
+            measureDelegate.collapseHeight
         }
 
-        val animation = ExpandAnimation(startHeight, endHeight, expandDuration.toLong())
-        // 因为动画执行中需要不断 onMeasure 期间有collapseState参数影响
-        // 但此参数亦应用在动画判断条件中. 因此改变状态放在动画执行之前且在动画参数之后
         collapseState = !collapseState
+
+        val animation = ExpandAnimation(startHeight, endHeight, expandDuration.toLong())
         animation.executable(onEnd = { state ->
             if (state) {
                 onExpand?.invoke()
@@ -216,16 +169,17 @@ class ExpandLinearLayout @JvmOverloads constructor(
             onIntercept = false
         }, onChange = {
             val changeVal = it.animatedValue as Int
-            when (changeVal - collapseTextHeight) {
+            when (changeVal - measureDelegate.collapseHeight) {
                 0 -> {
                     // 刚开始展开 || 收起的最后一刻
-                    params.height = collapseTextHeight - textViewPadding
+                    params.height = measureDelegate.collapseHeight
                 }
                 else -> {
                     // 展开/收起的变化过程
                     params.height = changeVal
                 }
             }
+            println("当前:$changeVal, collapse:${measureDelegate.collapseHeight}")
             textView?.layoutParams = params
         })
     }
