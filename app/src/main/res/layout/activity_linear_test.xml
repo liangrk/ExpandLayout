@@ -10,11 +10,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -29,8 +29,8 @@
                 app:expand_anim_duration="200"
                 app:expand_bottom_layout="@layout/expand_bottom"
                 app:expand_collapse_max_line="5"
-                app:expand_text_clickable="false"
-                app:expand_textView_id="@id/ex_haha">
+                app:expand_textView_id="@id/ex_haha"
+                app:expand_text_clickable="false">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/ex_haha"
@@ -39,11 +39,34 @@
 
             </component.kits.view.expand.ExpandLinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#E6BABA" />
+
+            <component.kits.view.expand.ExpandFrameLayout
+                android:id="@+id/fl_expand_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:expand_anim_duration="200"
+                app:expand_bottom_collapse_height="30dp"
+                app:expand_bottom_layout="@layout/expand_ove"
+                app:expand_collapse_max_line="5"
+                app:expand_textView_id="@id/ex_alpha"
+                app:expand_text_clickable="false">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ex_alpha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </component.kits.view.expand.ExpandFrameLayout>
+
             <!-- 占坑的 -->
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_span"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>

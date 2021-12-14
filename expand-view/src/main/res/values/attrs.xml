@@ -10,35 +10,22 @@
     <!-- 折叠动画时长 -->
     <attr name="expand_anim_duration" format="integer" />
     <!-- 被折叠的textview是否响应点击事件 -->
-    <attr name="expand_text_clickable" format="boolean"/>
+    <attr name="expand_text_clickable" format="boolean" />
 
     <declare-styleable name="ExpandLinearLayout">
         <attr name="expand_textView_id" />
         <attr name="expand_bottom_layout" />
         <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
-        <attr name="expand_text_clickable"/>
+        <attr name="expand_text_clickable" />
     </declare-styleable>
 
-    <!--
-    以下待删除
-    -->
-
-    <declare-styleable name="ExpendLinearLayout">
+    <declare-styleable name="ExpandFrameLayout">
         <attr name="expand_textView_id" />
+        <attr name="expand_bottom_layout" />
         <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
-        <attr name="expand_bottom_layout" />
-    </declare-styleable>
-
-    <declare-styleable name="ExpendFrameLayout">
-        <attr name="expand_textView_id" />
-        <attr name="expand_collapse_max_line" />
-        <attr name="expand_anim_duration" />
-        <attr name="expand_bottom_layout" />
-        <attr name="expand_bottom_width" format="dimension" />
-        <attr name="expand_bottom_height" format="dimension" />
-        <attr name="expand_collapse_width" format="dimension" />
-        <attr name="expand_collapse_height" format="dimension" />
+        <attr name="expand_text_clickable" />
+        <attr name="expand_bottom_collapse_height" format="dimension" />
     </declare-styleable>
 </resources>

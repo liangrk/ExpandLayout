@@ -1,6 +1,8 @@
 package component.kits.view.expand
 
+import android.view.View
+
 /**
- * @author : wing-hong Create by 2021/12/14 15:28
+ * text折叠布局中的 开始/结束函数 View:底部的 bottomLayout
  */
-internal typealias ExpandFunction = (() -> Unit)
+typealias ExpandFunction = ((View?) -> Unit)

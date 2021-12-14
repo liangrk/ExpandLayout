@@ -6,27 +6,24 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.TextView
 import component.kits.view.R
 import component.kits.view.ViewKits
 
 /**
- * @author : wing-hong Create by 2021/12/14 13:49
- *
- * 垂直方向的textview + ViewGroup折叠控件.
- * 注意: 当前控件只支持两个子view 且第一个view必须为textView
+ * @author : wing-hong Create by 2021/12/14 18:21
  */
-class ExpandLinearLayout @JvmOverloads constructor(
+class ExpandFrameLayout @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyle: Int = 0
-) : LinearLayout(context, attributeSet, defStyle) {
+) : FrameLayout(context, attributeSet, defStyle) {
 
-    private var expandTextViewId: Int = -1
-    private var expandBottomLayoutRes: Int = -1
+    private var expandTextViewId = -1
+    private var bottomLayoutRes = -1
 
-    var expandDuration: Int = 300
+    var expandDuration = 300
         private set
 
     var collapseMaxLine: Int = 8
@@ -34,13 +31,11 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
     private var textViewEnableClick = true
 
-    init {
-        initAttr(context, attributeSet)
-        orientation = VERTICAL
-    }
-
     private var textView: TextView? = null
     private var bottomLayout: View? = null
+
+    private var bottomLayoutHeight = -1
+    private var configBottomLayoutHeight = -1
 
     /**
      * 收起的标志. 用于在 onMeasure 时限制 [textView] 的最大行数
@@ -52,23 +47,33 @@ class ExpandLinearLayout @JvmOverloads constructor(
     private var onExpand: ExpandFunction? = null
     private var onCollapse: ExpandFunction? = null
 
-    private fun initAttr(context: Context, attributeSet: AttributeSet?) {
-        val typeArr = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandLinearLayout)
-        expandTextViewId = typeArr.getResourceId(
-            R.styleable.ExpandLinearLayout_expand_textView_id,
-            expandTextViewId
+    init {
+        val typeArr = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandFrameLayout)
+        expandTextViewId =
+            typeArr.getResourceId(
+                R.styleable.ExpandFrameLayout_expand_textView_id,
+                expandTextViewId
+            )
+        bottomLayoutRes = typeArr.getResourceId(
+            R.styleable.ExpandFrameLayout_expand_bottom_layout,
+            bottomLayoutRes
         )
-        expandBottomLayoutRes = typeArr.getResourceId(
-            R.styleable.ExpandLinearLayout_expand_bottom_layout,
-            expandBottomLayoutRes
+
+        expandDuration = typeArr.getInt(
+            R.styleable.ExpandFrameLayout_expand_anim_duration,
+            expandDuration
         )
-        expandDuration =
-            typeArr.getInt(R.styleable.ExpandLinearLayout_expand_anim_duration, expandDuration)
-        collapseMaxLine =
-            typeArr.getInt(R.styleable.ExpandLinearLayout_expand_collapse_max_line, collapseMaxLine)
+        collapseMaxLine = typeArr.getInt(
+            R.styleable.ExpandFrameLayout_expand_collapse_max_line,
+            collapseMaxLine
+        )
         textViewEnableClick = typeArr.getBoolean(
-            R.styleable.ExpandLinearLayout_expand_text_clickable,
+            R.styleable.ExpandFrameLayout_expand_text_clickable,
             textViewEnableClick
+        )
+        configBottomLayoutHeight = typeArr.getLayoutDimension(
+            R.styleable.ExpandFrameLayout_expand_bottom_collapse_height,
+            bottomLayoutHeight
         )
         typeArr.recycle()
     }
@@ -79,17 +84,19 @@ class ExpandLinearLayout @JvmOverloads constructor(
         // 为了适配textview样式问题, 此view外部设置, 控件不参与绘制只持有引用
         textView = findViewById(expandTextViewId)
             ?: throw IllegalArgumentException("折叠控件的textview是必须的不能为空, 请在$this 控件中定义并指定其id")
-
         enableTextClickable(textViewEnableClick)
 
-        if (expandBottomLayoutRes < 0) {
+        if (bottomLayoutRes < 0) {
             return
         }
         try {
-            val currentView = inflate(context, expandBottomLayoutRes, this) as ViewGroup
+            val currentView = inflate(context, bottomLayoutRes, this) as ViewGroup
             if (currentView.childCount > 1) {
                 bottomLayout = currentView.getChildAt(1)
                 bottomLayout?.setOnClickListener(safeListener)
+            }
+            bottomLayout?.post {
+                bottomLayoutHeight = bottomLayout?.height ?: 0
             }
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
@@ -97,10 +104,6 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
         // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
         measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
-    }
-
-    override fun setOrientation(orientation: Int) {
-        super.setOrientation(VERTICAL)
     }
 
     /**
@@ -111,6 +114,7 @@ class ExpandLinearLayout @JvmOverloads constructor(
         val listener = if (enable) safeListener else null
         textView?.setOnClickListener(listener)
     }
+
 
     /**
      * 增加展开/折叠的监听函数
@@ -163,27 +167,41 @@ class ExpandLinearLayout @JvmOverloads constructor(
      */
     private val safeListener = OnClickListener {
         // 因 measureDelegate 采用延迟声明 注意此处必须加上expandBottomLayoutRes的判断
-        if (onIntercept || expandBottomLayoutRes < 0) return@OnClickListener
+        if (onIntercept || bottomLayoutRes < 0) return@OnClickListener
         onIntercept = true
         val params = textView!!.layoutParams
+
+        // 底部bottom偏移量
+        val offset = if (configBottomLayoutHeight == -1) {
+            bottomLayoutHeight
+        } else {
+            configBottomLayoutHeight
+        }
+
         val startHeight = if (collapseState) {
             measureDelegate.collapseHeight
         } else {
-            measureDelegate.realTotalHeight
+            measureDelegate.realTotalHeight + offset
         }
         val endHeight = if (collapseState) {
-            measureDelegate.realTotalHeight
+            measureDelegate.realTotalHeight + offset
         } else {
             measureDelegate.collapseHeight
         }
 
         collapseState = !collapseState
 
+        val bottomParams = bottomLayout?.layoutParams
+
         val animation = ExpandAnimation(startHeight, endHeight, expandDuration.toLong())
         animation.executable(onEnd = { state ->
             if (state) {
+                bottomParams?.height = offset
+                bottomLayout?.layoutParams = bottomParams
                 onExpand?.invoke(bottomLayout)
             } else {
+                bottomParams?.height = bottomLayoutHeight
+                bottomLayout?.layoutParams = bottomParams
                 onCollapse?.invoke(bottomLayout)
             }
             onIntercept = false
@@ -193,6 +211,7 @@ class ExpandLinearLayout @JvmOverloads constructor(
                 0 -> {
                     // 刚开始展开 || 收起的最后一刻
                     params.height = measureDelegate.collapseHeight
+                    //bottomParams?.height = measureDelegate.collapseHeight - bottomLayoutHeight
                 }
                 else -> {
                     // 展开/收起的变化过程
