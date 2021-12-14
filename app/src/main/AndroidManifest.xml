@@ -11,7 +11,7 @@
         android:theme="@style/Theme.EpDemo">
 
         <activity
-            android:name=".ScrollActivity"
+            android:name=".LinearTestAct"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,16 +21,15 @@
         </activity>
 
         <activity
-            android:name=".SecondActivity"
+            android:name=".MainActivity"
             android:exported="true">
 
         </activity>
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".SecondActivity"
+            android:exported="true"></activity>
 
-        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
-package component.kits.view
+package component.kits.view.expend
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
 
@@ -21,6 +22,19 @@ class ExpandAnimation(
         animation = ValueAnimator.ofInt(startHeight, endHeight)
         animation!!.duration = duration
         animation!!.interpolator = AccelerateDecelerateInterpolator()
+        animation!!.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator?) {
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+        })
         animation!!.addUpdateListener {
             onChange(it)
         }

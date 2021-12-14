@@ -1,7 +1,6 @@
-package component.kits.view
+package component.kits.view.expend
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,6 +8,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import component.kits.view.R
 
 /**
  * @author : wing-hong Create by 2021/12/01 11:01
@@ -32,31 +32,31 @@ class ExpandFrameLayout @JvmOverloads constructor(
     private lateinit var expandDelegate: ExpandDelegate
 
     private fun initAttr(attrs: AttributeSet?) {
-        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ExpandFrameLayout)
-        val maxLine = typeArray.getInt(R.styleable.ExpandFrameLayout_expand_max_line, 10)
-        val duration = typeArray.getInt(R.styleable.ExpandFrameLayout_expand_anim_duration, 300)
+        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ExpendFrameLayout)
+        val maxLine = typeArray.getInt(R.styleable.ExpendFrameLayout_expand_collapse_max_line, 10)
+        val duration = typeArray.getInt(R.styleable.ExpendFrameLayout_expand_anim_duration, 300)
 
         expandWidth = typeArray.getLayoutDimension(
-            R.styleable.ExpandFrameLayout_expand_bottom_width,
+            R.styleable.ExpendFrameLayout_expand_bottom_width,
             LayoutParams.MATCH_PARENT
         )
         expandHeight = typeArray.getLayoutDimension(
-            R.styleable.ExpandFrameLayout_expand_bottom_height,
+            R.styleable.ExpendFrameLayout_expand_bottom_height,
             LayoutParams.WRAP_CONTENT
         )
         collapseWidth = typeArray.getLayoutDimension(
-            R.styleable.ExpandFrameLayout_expand_collapse_width,
+            R.styleable.ExpendFrameLayout_expand_collapse_width,
             expandWidth
         )
         collapseHeight = typeArray.getLayoutDimension(
-            R.styleable.ExpandFrameLayout_expand_collapse_height,
+            R.styleable.ExpendFrameLayout_expand_collapse_height,
             expandHeight
         )
 
         expandTextViewId =
-            typeArray.getResourceId(R.styleable.ExpandFrameLayout_expand_textView_id, -1)
+            typeArray.getResourceId(R.styleable.ExpendFrameLayout_expand_textView_id, -1)
         expandBottomLayoutRes =
-            typeArray.getResourceId(R.styleable.ExpandFrameLayout_expand_bottom_layout, -1)
+            typeArray.getResourceId(R.styleable.ExpendFrameLayout_expand_bottom_layout, -1)
         expandDelegate = ExpandDelegate(maxLine, duration)
         typeArray.recycle()
     }

@@ -1,10 +1,12 @@
-package component.kits.view
+package component.kits.view.expend
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import component.kits.view.R
 
 /**
  * @author : wing-hong Create by 2021/12/01 10:55
@@ -24,14 +26,14 @@ class ExpandLinearLayout @JvmOverloads constructor(
     private lateinit var expandDelegate: ExpandDelegate
 
     private fun initAttr(attrs: AttributeSet?) {
-        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ExpandLinearLayout)
-        val maxLine = typeArray.getInt(R.styleable.ExpandLinearLayout_expand_max_line, 8)
-        val duration = typeArray.getInt(R.styleable.ExpandLinearLayout_expand_anim_duration, 300)
+        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ExpendLinearLayout)
+        val maxLine = typeArray.getInt(R.styleable.ExpendLinearLayout_expand_collapse_max_line, 8)
+        val duration = typeArray.getInt(R.styleable.ExpendLinearLayout_expand_anim_duration, 300)
 
         expandTextViewId =
-            typeArray.getResourceId(R.styleable.ExpandLinearLayout_expand_textView_id, -1)
+            typeArray.getResourceId(R.styleable.ExpendLinearLayout_expand_textView_id, -1)
         expandBottomLayoutRes =
-            typeArray.getResourceId(R.styleable.ExpandLinearLayout_expand_bottom_layout, -1)
+            typeArray.getResourceId(R.styleable.ExpendLinearLayout_expand_bottom_layout, -1)
         expandDelegate = ExpandDelegate(maxLine, duration)
         typeArray.recycle()
     }
@@ -45,7 +47,10 @@ class ExpandLinearLayout @JvmOverloads constructor(
         expandDelegate.inflateTextView(targetTextView)
         try {
             if (expandBottomLayoutRes > 0) {
-                expandDelegate.bottomLayout = inflate(context, expandBottomLayoutRes, this)
+                val inflateView = inflate(context, expandBottomLayoutRes, this) as ViewGroup
+                val what = inflateView.getChildAt(1)
+                expandDelegate.bottomLayout = inflateView
+                println("what?:${expandDelegate.bottomLayout}")
             }
         } catch (ignore: Exception) {
             // ignore bottom layout added err

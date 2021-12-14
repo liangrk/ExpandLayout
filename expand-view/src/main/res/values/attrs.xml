@@ -6,20 +6,34 @@
     <!-- 被折叠textview底部的自定义布局, 允许为空 -->
     <attr name="expand_bottom_layout" format="reference" />
     <!-- 收起后可显示的最大行数 -->
-    <attr name="expand_max_line" format="integer" />
+    <attr name="expand_collapse_max_line" format="integer" />
     <!-- 折叠动画时长 -->
     <attr name="expand_anim_duration" format="integer" />
+    <!-- 被折叠的textview是否响应点击事件 -->
+    <attr name="expand_text_clickable" format="boolean"/>
 
     <declare-styleable name="ExpandLinearLayout">
         <attr name="expand_textView_id" />
-        <attr name="expand_max_line" />
+        <attr name="expand_bottom_layout" />
+        <attr name="expand_collapse_max_line" />
+        <attr name="expand_anim_duration" />
+        <attr name="expand_text_clickable"/>
+    </declare-styleable>
+
+    <!--
+    以下待删除
+    -->
+
+    <declare-styleable name="ExpendLinearLayout">
+        <attr name="expand_textView_id" />
+        <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
         <attr name="expand_bottom_layout" />
     </declare-styleable>
 
-    <declare-styleable name="ExpandFrameLayout">
+    <declare-styleable name="ExpendFrameLayout">
         <attr name="expand_textView_id" />
-        <attr name="expand_max_line" />
+        <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
         <attr name="expand_bottom_layout" />
         <attr name="expand_bottom_width" format="dimension" />

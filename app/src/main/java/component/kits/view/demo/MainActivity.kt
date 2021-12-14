@@ -7,9 +7,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import com.blankj.utilcode.util.JsonUtils
 import com.blankj.utilcode.util.ResourceUtils
-import component.kits.view.ExpandFrameLayout
-import component.kits.view.ExpandLinearLayout
-import component.kits.view.OnExpandStateListener
+import component.kits.view.expend.ExpandLinearLayout
+import component.kits.view.expend.OnExpandStateListener
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         val json = ResourceUtils.readAssets2String("netapi.json")
         val text = JsonUtils.getString(json,"key")
-        val expandLayout:ExpandLinearLayout = findViewById(R.id.expand_layout)
+        val expandLayout: ExpandLinearLayout = findViewById(R.id.expand_layout)
         expandLayout.setExpandText(text, object : OnExpandStateListener {
 
             override fun onExpandStateChange(bottomLayout: View?, isExpand: Boolean) {

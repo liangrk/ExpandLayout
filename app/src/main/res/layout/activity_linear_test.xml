@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".LinearTestAct"
+    tools:ignore="MissingDefaultResource">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -21,13 +22,14 @@
             android:orientation="vertical">
 
             <!-- 底部布局不遮挡顶部textview -->
-            <component.kits.view.expend.ExpandLinearLayout
+            <component.kits.view.expand.ExpandLinearLayout
                 android:id="@+id/expand_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:expand_anim_duration="200"
                 app:expand_bottom_layout="@layout/expand_bottom"
                 app:expand_collapse_max_line="5"
+                app:expand_text_clickable="false"
                 app:expand_textView_id="@id/ex_haha">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -35,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-            </component.kits.view.expend.ExpandLinearLayout>
+            </component.kits.view.expand.ExpandLinearLayout>
 
             <!-- 占坑的 -->
             <androidx.appcompat.widget.AppCompatTextView

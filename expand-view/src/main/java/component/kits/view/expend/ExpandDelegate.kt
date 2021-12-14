@@ -1,4 +1,4 @@
-package component.kits.view
+package component.kits.view.expend
 
 import android.view.View
 import android.view.ViewGroup
@@ -87,7 +87,7 @@ class ExpandDelegate(
         val measureHeight = onChange()
         if (collapseState) {
             textView.post { marginBetweenTxtAndBottom = viewGroup.height - textView.height }
-            collapseHeight = measureHeight
+            collapseHeight = measureHeight - (bottomLayout?.height?:0)
         }
     }
 
@@ -121,7 +121,7 @@ class ExpandDelegate(
             .clear()
             .start {
                 val change = it.animatedValue as Int
-                println("变化值:$change")
+                println("变化值:${change}, collaps:$collapseHeight,diff:$diff")
                 // 动画变化
                 when (change - collapseHeight) {
                     0 -> {
@@ -130,9 +130,10 @@ class ExpandDelegate(
                     }
                     else -> {
                         // 展开/收起过程
-                        params.height = change
+                        params.height = change - diff
                     }
                 }
+
                 textView.layoutParams = params
                 onCollapseListener?.onExpandStateChange(bottomLayout, collapseState)
                 resetIntercept(change) {
@@ -165,14 +166,18 @@ class ExpandDelegate(
      */
     private fun matchAnim(): ExpandAnimation {
         val start = if (!collapseState) {
+            // 未展开
             collapseHeight
         } else {
-            realTotalHeight
+            // 展开
+            realTotalHeight + diff
         }
 
         val end = if (!collapseState) {
-            realTotalHeight
+            // 未展开
+            realTotalHeight + diff
         } else {
+            // 暂开
             collapseHeight
         }
         return getAnimationObj(start, end, duration.toLong())

@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import com.blankj.utilcode.util.JsonUtils
 import com.blankj.utilcode.util.ResourceUtils
-import component.kits.view.ExpandFrameLayout
-import component.kits.view.OnExpandStateListener
+import component.kits.view.expend.ExpandFrameLayout
+import component.kits.view.expend.OnExpandStateListener
 
 class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
