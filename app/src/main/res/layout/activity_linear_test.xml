@@ -21,9 +21,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--
-            app:expand_bottom_layout="@layout/expand_bottom"
-            -->
             <!-- 底部布局不遮挡顶部textview -->
             <component.kits.view.expand.ExpandLinearLayout
                 android:id="@+id/expand_layout"
@@ -31,8 +28,9 @@
                 android:layout_height="wrap_content"
                 app:expand_anim_duration="200"
                 app:expand_collapse_max_line="5"
+                app:expand_bottom_layout="@layout/expand_bottom"
                 app:expand_textView_id="@id/ex_haha"
-                app:expand_text_clickable="true">
+                app:expand_text_clickable="false">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/ex_haha"
@@ -46,17 +44,16 @@
                 android:layout_height="20dp"
                 android:background="#E6BABA" />
 
-            <!--app:expand_bottom_layout="@layout/expand_ove"-->
             <component.kits.view.expand.ExpandFrameLayout
                 android:id="@+id/fl_expand_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:expand_anim_duration="200"
                 app:expand_bottom_expand_height="30dp"
-
+                app:expand_bottom_layout="@layout/expand_ove"
                 app:expand_collapse_max_line="5"
                 app:expand_textView_id="@id/ex_alpha"
-                app:expand_text_clickable="true">
+                app:expand_text_clickable="false">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/ex_alpha"

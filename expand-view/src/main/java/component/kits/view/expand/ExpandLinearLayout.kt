@@ -82,10 +82,9 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
         enableTextClickable(textViewEnableClick)
 
-        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
-
         if (expandBottomLayoutRes < 0) {
+            // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+            measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
             return
         }
         try {
@@ -96,6 +95,13 @@ class ExpandLinearLayout @JvmOverloads constructor(
             }
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
+        }
+
+        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine) {
+            if (textView!!.lineCount <= collapseMaxLine) {
+                bottomLayout?.visibility = View.GONE
+            }
         }
     }
 

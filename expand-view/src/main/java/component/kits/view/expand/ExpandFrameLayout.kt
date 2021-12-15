@@ -86,10 +86,9 @@ class ExpandFrameLayout @JvmOverloads constructor(
             ?: throw IllegalArgumentException("折叠控件的textview是必须的不能为空, 请在$this 控件中定义并指定其id")
         enableTextClickable(textViewEnableClick)
 
-        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
-
         if (bottomLayoutRes < 0) {
+            // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+            measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
             return
         }
         try {
@@ -103,6 +102,13 @@ class ExpandFrameLayout @JvmOverloads constructor(
             }
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
+        }
+
+        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine) {
+            if (textView!!.lineCount <= collapseMaxLine) {
+                bottomLayout?.visibility = View.GONE
+            }
         }
     }
 
