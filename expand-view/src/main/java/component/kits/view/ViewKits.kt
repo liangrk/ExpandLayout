@@ -16,7 +16,8 @@ object ViewKits {
      */
     @JvmStatic
     fun measureTextViewHeight(textView: TextView, lineCount: Int = textView.lineCount): Int {
-        val textHeight = textView.layout?.getLineTop(lineCount) ?: -1
+        val minLineCount = lineCount.coerceAtMost(textView.lineCount)
+        val textHeight = textView.layout?.getLineTop(minLineCount) ?: -1
         val paddingVertical = textView.compoundPaddingBottom + textView.compoundPaddingTop
         val total = textHeight + paddingVertical
         return if (total == 0) {

@@ -82,6 +82,9 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
         enableTextClickable(textViewEnableClick)
 
+        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
+
         if (expandBottomLayoutRes < 0) {
             return
         }
@@ -94,9 +97,6 @@ class ExpandLinearLayout @JvmOverloads constructor(
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
         }
-
-        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
     }
 
     override fun setOrientation(orientation: Int) {
@@ -163,7 +163,7 @@ class ExpandLinearLayout @JvmOverloads constructor(
      */
     private val safeListener = OnClickListener {
         // 因 measureDelegate 采用延迟声明 注意此处必须加上expandBottomLayoutRes的判断
-        if (onIntercept || expandBottomLayoutRes < 0) return@OnClickListener
+        if (onIntercept) return@OnClickListener
         onIntercept = true
         val params = textView!!.layoutParams
         val startHeight = if (collapseState) {
@@ -179,6 +179,10 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
         collapseState = !collapseState
 
+        if (startHeight == endHeight) {
+            onIntercept = false
+            return@OnClickListener
+        }
         val animation = ExpandAnimation(startHeight, endHeight, expandDuration.toLong())
         animation.executable(onEnd = { state ->
             if (state) {

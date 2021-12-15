@@ -17,6 +17,8 @@ class LinearTestAct : AppCompatActivity() {
         val json = ResourceUtils.readAssets2String("netapi.json")
         val text = JsonUtils.getString(json, "key")
 
+        val simpleText = "第一行\n第二行\n第三行"
+
         val expandLayout: ExpandLinearLayout = findViewById(R.id.expand_layout)
         expandLayout.setText(charSequence = text, onExpand = {
             println("展开!")
@@ -25,7 +27,7 @@ class LinearTestAct : AppCompatActivity() {
         })
 
         val alphaExpandLayout: ExpandFrameLayout = findViewById(R.id.fl_expand_layout)
-        alphaExpandLayout.setText(charSequence = text, onExpand = {
+        alphaExpandLayout.setText(charSequence = simpleText, onExpand = {
             println("展开!")
             val textView = it?.findViewById<TextView>(R.id.tv_frame_btn)
             textView?.setText("ahahahahah")
