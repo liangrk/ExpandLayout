@@ -124,7 +124,11 @@ expandLayout.setText(charSequence = text, onExpand = { view->
 |   getExpandHeight   |       获取展开后的高度       |
 |  getCollapseHeight  |       获取收起后的高度       |
 
+> 关于AGP7.0发布jetpack
+
+[感谢这位仁兄的分享](https://www.jianshu.com/p/c0645390c070)
+
 > 最后感谢以下库提供的思路及灵感
 
 [Manabu-GT](https://github.com/Manabu-GT/ExpandableTextView)  
-[ExpandTextView](https://github.com/hymanme/ExpandTextView)  
+[ExpandTextView](https://github.com/hymanme/ExpandTextView)
