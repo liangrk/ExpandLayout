@@ -199,7 +199,6 @@ class ExpandLinearLayout @JvmOverloads constructor(
                     params.height = changeVal
                 }
             }
-            println("当前:$changeVal, collapse:${measureDelegate.collapseHeight}")
             textView?.layoutParams = params
         })
     }

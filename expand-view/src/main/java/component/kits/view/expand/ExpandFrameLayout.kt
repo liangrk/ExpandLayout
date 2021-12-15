@@ -72,7 +72,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
             textViewEnableClick
         )
         configBottomLayoutHeight = typeArr.getLayoutDimension(
-            R.styleable.ExpandFrameLayout_expand_bottom_collapse_height,
+            R.styleable.ExpandFrameLayout_expand_bottom_expand_height,
             bottomLayoutHeight
         )
         typeArr.recycle()
@@ -211,14 +211,12 @@ class ExpandFrameLayout @JvmOverloads constructor(
                 0 -> {
                     // 刚开始展开 || 收起的最后一刻
                     params.height = measureDelegate.collapseHeight
-                    //bottomParams?.height = measureDelegate.collapseHeight - bottomLayoutHeight
                 }
                 else -> {
                     // 展开/收起的变化过程
                     params.height = changeVal
                 }
             }
-            println("当前:$changeVal, collapse:${measureDelegate.collapseHeight}")
             textView?.layoutParams = params
         })
     }

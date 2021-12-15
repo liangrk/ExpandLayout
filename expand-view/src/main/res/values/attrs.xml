@@ -26,6 +26,6 @@
         <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
         <attr name="expand_text_clickable" />
-        <attr name="expand_bottom_collapse_height" format="dimension" />
+        <attr name="expand_bottom_expand_height" format="dimension" />
     </declare-styleable>
 </resources>
