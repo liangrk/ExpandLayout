@@ -21,10 +21,11 @@ allprojects {
 ```
 
 2. Add the dependency
+> 当前最新版本为 2.0.0
 
 ```
 dependencies {
-    implementation "com.github.liangrk:ExpandLayout:${lastet_version}"
+    implementation "com.github.liangrk:ExpandLayout:2.0.0"
 }
 ```
 

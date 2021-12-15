@@ -47,7 +47,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.blankj:utilcode:1.30.5'
-    implementation project(path:":expand-view")
+    // implementation project(path:":expand-view")
+    implementation 'com.github.liangrk:ExpandLayout:2.0.0'
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
 }
