@@ -7,6 +7,27 @@
 
 针对上面的问题加上自身功能需求,便有了本库
 
+> how to use
+
+1. Add it in your root build.gradle at the end of repositories:
+
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+2. Add the dependency
+
+```
+dependencies {
+    implementation "com.github.liangrk:ExpandLayout:${lastet_version}"
+}
+```
+
 > 关于本库
 
 对于被折叠的textview, 样式完全由外部定义, 写在提供的Layout中, 把其id传入父布局即可底部view定义在一个新的xml中, 通过引用添加到父布局,
