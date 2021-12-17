@@ -1,7 +1,6 @@
 package component.kits.view
 
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 
 /**
@@ -24,20 +23,6 @@ object ViewKits {
             -1
         } else {
             total
-        }
-    }
-
-    fun measureMaxMeasureHeight(textView: TextView?): Int {
-        if (textView == null) return -1
-        val width = textView.measuredWidth
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-        val heightMeasureSpec =
-            View.MeasureSpec.makeMeasureSpec((Int.MAX_VALUE / 2), View.MeasureSpec.AT_MOST)
-        textView.measure(widthMeasureSpec, heightMeasureSpec)
-        return if (textView.measuredHeight == 0) {
-            -1
-        } else {
-            textView.measuredHeight
         }
     }
 

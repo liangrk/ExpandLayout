@@ -54,7 +54,7 @@ class ExpandMeasureDelegate(
             copyTextView.measure(widthMeasureSpec, heightMeasureSpec)
             copyTextView.measuredHeight
 
-            realTotalHeight = ViewKits.measureMaxMeasureHeight(sourceTextView)
+            realTotalHeight = ViewKits.measureTextViewHeight(sourceTextView)
             collapseHeight = copyTextView.measuredHeight
 
             val params = sourceTextView.layoutParams

@@ -18,7 +18,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyle: Int = 0
-) : FrameLayout(context, attributeSet, defStyle) {
+) : FrameLayout(context, attributeSet, defStyle), IExpandEffective {
 
     private var expandTextViewId = -1
     private var bottomLayoutRes = -1
@@ -46,6 +46,8 @@ class ExpandFrameLayout @JvmOverloads constructor(
 
     private var onExpand: ExpandFunction? = null
     private var onCollapse: ExpandFunction? = null
+    private var onReady: ExpandFunction? = null
+    private var arrowClick: (() -> Boolean)? = null
 
     init {
         val typeArr = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandFrameLayout)
@@ -109,6 +111,8 @@ class ExpandFrameLayout @JvmOverloads constructor(
             if (textView!!.lineCount <= collapseMaxLine) {
                 bottomLayout?.visibility = View.GONE
             }
+
+            onReady?.invoke(bottomLayout)
         }
     }
 
@@ -129,19 +133,45 @@ class ExpandFrameLayout @JvmOverloads constructor(
      */
     private fun addExpandCollapseObserver(
         onExpand: ExpandFunction? = null,
-        onCollapse: ExpandFunction? = null
+        onCollapse: ExpandFunction? = null,
+        onReady: ExpandFunction? = null,
+        arrowClick: (() -> Boolean)?
     ) {
         this.onExpand = onExpand
         this.onCollapse = onCollapse
+        this.onReady = onReady
+        this.arrowClick = arrowClick
     }
 
-    fun setText(
+    override fun setText(
         charSequence: CharSequence,
-        onExpand: ExpandFunction? = null,
-        onCollapse: ExpandFunction? = null
+        onExpand: ExpandFunction?,
+        onCollapse: ExpandFunction?,
+        onReady: ExpandFunction?,
+        arrowClick: (() -> Boolean)?
     ) {
         textView?.text = charSequence
-        addExpandCollapseObserver(onExpand, onCollapse)
+        addExpandCollapseObserver(onExpand, onCollapse, onReady, arrowClick)
+    }
+
+    override fun senEnableBottomClick(enable: Boolean) {
+        val listener = if (enable) {
+            safeListener
+        } else null
+        bottomLayout?.setOnClickListener(listener)
+    }
+
+    override fun setExpand() {
+        if (collapseState) {
+            // 收起时才展开
+            bottomLayout?.performClick()
+        }
+    }
+
+    override fun setCollapse() {
+        if (collapseState) return
+        // 展开时才收起
+        bottomLayout?.performClick()
     }
 
     private var onIntercept = false
@@ -150,7 +180,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
         return onIntercept
     }
 
-    fun getExpandHeight(): Int {
+    override fun getExpandHeight(): Int {
         return if (this::measureDelegate.isInitialized) {
             measureDelegate.realTotalHeight
         } else {
@@ -158,7 +188,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
         }
     }
 
-    fun getCollapseHeight(): Int {
+    override fun getCollapseHeight(): Int {
         return if (this::measureDelegate.isInitialized) {
             measureDelegate.collapseHeight
         } else {
@@ -172,6 +202,9 @@ class ExpandFrameLayout @JvmOverloads constructor(
      * 2.动画播放
      */
     private val safeListener = OnClickListener {
+        if (arrowClick?.invoke() == false) {
+            return@OnClickListener
+        }
         // 因 measureDelegate 采用延迟声明 注意此处必须加上expandBottomLayoutRes的判断
         if (onIntercept) return@OnClickListener
         onIntercept = true
