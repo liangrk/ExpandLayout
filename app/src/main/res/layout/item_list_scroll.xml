@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <component.kits.view.expand.ExpandFrameLayout
+            android:id="@+id/fl_expand_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:expand_anim_duration="800"
+            app:expand_bottom_expand_height="30dp"
+            app:expand_bottom_layout="@layout/expand_ove"
+            app:expand_collapse_max_line="9"
+            app:expand_textView_id="@id/ex_alpha"
+            app:expand_text_clickable="false">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ex_alpha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </component.kits.view.expand.ExpandFrameLayout>
+
+    </FrameLayout>
+</layout>

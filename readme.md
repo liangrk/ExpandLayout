@@ -18,6 +18,9 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+
+kotlin-gradle-plugin
+
 ```
 
 2. Add the dependency
