@@ -74,7 +74,7 @@ class ExpandMeasureDelegate(
             sourceTextView.layoutParams = params
 
             // 回调用于更改最小盖度
-            onInit?.invoke(realTotalHeight <= measureCollapseHeight)
+            onInit?.invoke(realTotalHeight <= heightMeasureSpec)
         }
     }
 }
