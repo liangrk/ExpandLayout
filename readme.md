@@ -24,11 +24,13 @@ kotlin-gradle-plugin
 ```
 
 2. Add the dependency
-> 当前最新版本为 2.0.0
+> 当前最新版本为
+>
+> [![](https://jitpack.io/v/liangrk/ExpandLayout.svg)](https://jitpack.io/#liangrk/ExpandLayout)
 
 ```
 dependencies {
-    implementation "com.github.liangrk:ExpandLayout:2.0.0"
+    implementation "com.github.liangrk:ExpandLayout:${version}"
 }
 ```
 
