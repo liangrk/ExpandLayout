@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import component.kits.view.ViewKits
+import java.math.BigDecimal
 
 /**
  * @author : wing-hong Create by 2021/12/14 17:46
@@ -17,6 +18,7 @@ import component.kits.view.ViewKits
 class ExpandMeasureDelegate(
     private val sourceTextView: TextView,
     private var collapseMaxLine: Int,
+    private var lineSpacingMultiplier: Float,
     private var onInit: (() -> Unit)? = null
 ) {
 
@@ -45,16 +47,26 @@ class ExpandMeasureDelegate(
             copyTextView.setLines(collapseMaxLine)
 
             val width = sourceTextView.width
+            val lineSpacingMultiplierHeight = collapseHeight * lineSpacingMultiplier
             val height = ViewKits.measureTextViewHeight(sourceTextView, collapseMaxLine)
+            val measureCollapseHeight =
+                height + BigDecimal.valueOf(lineSpacingMultiplierHeight.toDouble())
+                    .setScale(0, BigDecimal.ROUND_UP)
+                    .intValueExact()
 
             val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
             val heightMeasureSpec =
-                View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST)
+                View.MeasureSpec.makeMeasureSpec(measureCollapseHeight, View.MeasureSpec.AT_MOST)
             copyTextView.layoutParams = sourceTextView.layoutParams
             copyTextView.measure(widthMeasureSpec, heightMeasureSpec)
             copyTextView.measuredHeight
 
-            realTotalHeight = ViewKits.measureTextViewHeight(sourceTextView)
+            val measureTotalSpaceHeight = sourceTextView.lineCount * lineSpacingMultiplier
+            realTotalHeight = ViewKits.measureTextViewHeight(sourceTextView) + BigDecimal.valueOf(
+                measureTotalSpaceHeight.toDouble()
+            ).setScale(0, BigDecimal.ROUND_UP)
+                .intValueExact()
+
             collapseHeight = copyTextView.measuredHeight
 
             val params = sourceTextView.layoutParams

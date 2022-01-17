@@ -34,6 +34,8 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
     private var textViewEnableClick = true
 
+    private var lineSpacingMultiplier = 1f
+
     init {
         initAttr(context, attributeSet)
         orientation = VERTICAL
@@ -72,6 +74,11 @@ class ExpandLinearLayout @JvmOverloads constructor(
             R.styleable.ExpandLinearLayout_expand_text_clickable,
             textViewEnableClick
         )
+
+        lineSpacingMultiplier = typeArr.getFloat(
+            R.styleable.ExpandFrameLayout_expand_line_spacing_multiplier,
+            lineSpacingMultiplier
+        )
         typeArr.recycle()
     }
 
@@ -86,7 +93,8 @@ class ExpandLinearLayout @JvmOverloads constructor(
 
         if (expandBottomLayoutRes < 0) {
             // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-            measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
+            measureDelegate =
+                ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier)
             return
         }
         try {
@@ -100,13 +108,14 @@ class ExpandLinearLayout @JvmOverloads constructor(
         }
 
         // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine) {
-            if (textView!!.lineCount <= collapseMaxLine) {
-                bottomLayout?.visibility = View.GONE
-            }
+        measureDelegate =
+            ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier) {
+                if (textView!!.lineCount <= collapseMaxLine) {
+                    bottomLayout?.visibility = View.GONE
+                }
 
-            onReady?.invoke(bottomLayout)
-        }
+                onReady?.invoke(bottomLayout)
+            }
     }
 
     override fun setOrientation(orientation: Int) {

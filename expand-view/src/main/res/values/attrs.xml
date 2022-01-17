@@ -11,6 +11,8 @@
     <attr name="expand_anim_duration" format="integer" />
     <!-- 被折叠的textview是否响应点击事件 -->
     <attr name="expand_text_clickable" format="boolean" />
+    <!-- 行高倍数 lineSpacingMultiplier跟textView的属性需要相同 -->
+    <attr name="expand_line_spacing_multiplier" format="float" />
 
     <declare-styleable name="ExpandLinearLayout">
         <attr name="expand_textView_id" />
@@ -18,6 +20,7 @@
         <attr name="expand_collapse_max_line" />
         <attr name="expand_anim_duration" />
         <attr name="expand_text_clickable" />
+        <attr name="expand_line_spacing_multiplier" />
     </declare-styleable>
 
     <declare-styleable name="ExpandFrameLayout">
@@ -27,5 +30,6 @@
         <attr name="expand_anim_duration" />
         <attr name="expand_text_clickable" />
         <attr name="expand_bottom_expand_height" format="dimension" />
+        <attr name="expand_line_spacing_multiplier" />
     </declare-styleable>
 </resources>

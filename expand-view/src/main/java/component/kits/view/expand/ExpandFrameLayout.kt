@@ -37,6 +37,8 @@ class ExpandFrameLayout @JvmOverloads constructor(
     private var bottomLayoutHeight = -1
     private var configBottomLayoutHeight = -1
 
+    private var lineSpacingMultiplier = 1f
+
     /**
      * 收起的标志. 用于在 onMeasure 时限制 [textView] 的最大行数
      */
@@ -77,6 +79,11 @@ class ExpandFrameLayout @JvmOverloads constructor(
             R.styleable.ExpandFrameLayout_expand_bottom_expand_height,
             bottomLayoutHeight
         )
+
+        lineSpacingMultiplier = typeArr.getFloat(
+            R.styleable.ExpandFrameLayout_expand_line_spacing_multiplier,
+            lineSpacingMultiplier
+        )
         typeArr.recycle()
     }
 
@@ -90,7 +97,8 @@ class ExpandFrameLayout @JvmOverloads constructor(
 
         if (bottomLayoutRes < 0) {
             // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-            measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine)
+            measureDelegate =
+                ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier)
             return
         }
         try {
@@ -107,13 +115,14 @@ class ExpandFrameLayout @JvmOverloads constructor(
         }
 
         // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
-        measureDelegate = ExpandMeasureDelegate(textView!!, collapseMaxLine) {
-            if (textView!!.lineCount <= collapseMaxLine) {
-                bottomLayout?.visibility = View.GONE
-            }
+        measureDelegate =
+            ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier) {
+                if (textView!!.lineCount <= collapseMaxLine) {
+                    bottomLayout?.visibility = View.GONE
+                }
 
-            onReady?.invoke(bottomLayout)
-        }
+                onReady?.invoke(bottomLayout)
+            }
     }
 
     /**

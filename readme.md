@@ -30,7 +30,7 @@ kotlin-gradle-plugin
 
 ```
 dependencies {
-    implementation "com.github.liangrk:ExpandLayout:${version}"
+    implementation "com.github.liangrk:ExpandLayout:${version}"         // 当前版本2.1.2
 }
 ```
 
@@ -51,14 +51,15 @@ dependencies {
 
 ### layout-attr
 
-|                      属性名 | 说明                                          |
-| --------------------------: | :-------------------------------------------- |
-|          expand_textView_id | 被折叠的textview id                           |
-|        expand_bottom_layout | 底部view的布局引用                            |
-|    expand_collapse_max_line | 折叠后可显示的最大行数                        |
-|        expand_anim_duration | 折叠动画时长(单位ms)                          |
-|       expand_text_clickable | 被折叠的textview是否需要响应点击事件          |
-| expand_bottom_expand_height | 展开后底部view的高度(仅支持ExpandFrameLayout) |
+|                         属性名 | 说明                                          |
+| -----------------------------: | :-------------------------------------------- |
+|             expand_textView_id | 被折叠的textview id                           |
+|           expand_bottom_layout | 底部view的布局引用                            |
+|       expand_collapse_max_line | 折叠后可显示的最大行数                        |
+|           expand_anim_duration | 折叠动画时长(单位ms)                          |
+|          expand_text_clickable | 被折叠的textview是否需要响应点击事件          |
+|    expand_bottom_expand_height | 展开后底部view的高度(仅支持ExpandFrameLayout) |
+| expand_line_spacing_multiplier | 兼容textView设置行高后测量不准确              |
 
 ### 用法
 
