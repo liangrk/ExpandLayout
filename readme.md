@@ -30,7 +30,7 @@ kotlin-gradle-plugin
 
 ```
 dependencies {
-    implementation "com.github.liangrk:ExpandLayout:${version}"         // 当前版本2.1.2
+    implementation "com.github.liangrk:ExpandLayout:${version}"         // 当前版本2.2.0
 }
 ```
 
@@ -117,10 +117,14 @@ dependencies {
 ```
 val expandLayout: ExpandLinearLayout = findViewById(R.id.expand_layout)
 expandLayout.setText(charSequence = text, onExpand = { view->
-    println("展开!")
+    // 已经展开 view是xml中传入的bottomLayout
 }, onCollapse = { view->
-    println("收起!")
-})
+    // 已经折叠 view是xml中传入的bottomLayout
+}, onReady = {
+    // 渲染完成
+}, arrowClick = {
+    true        // 是否允许点击 可以在此做业务逻辑判断
+}, overrideMeasure = false)         // 是否需要重新测量, 默认false, 只有当一开始view是gone的情况下 切换为visibility测量不准确的时候应用
 ```
 
 > 对于其他api

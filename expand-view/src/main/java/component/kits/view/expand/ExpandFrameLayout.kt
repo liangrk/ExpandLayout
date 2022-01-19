@@ -101,11 +101,19 @@ class ExpandFrameLayout @JvmOverloads constructor(
                 ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier)
             return
         }
+
+        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
+        resetMeasureDelegate()
+    }
+
+    private fun resetMeasureDelegate() {
         try {
-            val currentView = inflate(context, bottomLayoutRes, this) as ViewGroup
-            if (currentView.childCount > 1) {
-                bottomLayout = currentView.getChildAt(1)
-                bottomLayout?.setOnClickListener(safeListener)
+            if (bottomLayout == null) {
+                val currentView = inflate(context, bottomLayoutRes, this) as ViewGroup
+                if (currentView.childCount > 1) {
+                    bottomLayout = currentView.getChildAt(1)
+                    bottomLayout?.setOnClickListener(safeListener)
+                }
             }
             bottomLayout?.post {
                 bottomLayoutHeight = bottomLayout?.height ?: 0
@@ -114,11 +122,12 @@ class ExpandFrameLayout @JvmOverloads constructor(
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
         }
 
-        // 委托测量textview的最大跟最小高度. 测量完成后设置默认最小高度.
         measureDelegate =
             ExpandMeasureDelegate(textView!!, collapseMaxLine, lineSpacingMultiplier) {
-                if (textView!!.lineCount <= collapseMaxLine) {
-                    bottomLayout?.visibility = View.GONE
+                if (it) {
+                    bottomLayout?.visibility = GONE
+                } else {
+                    bottomLayout?.visibility = VISIBLE
                 }
 
                 onReady?.invoke(bottomLayout)
@@ -157,8 +166,12 @@ class ExpandFrameLayout @JvmOverloads constructor(
         onExpand: ExpandFunction?,
         onCollapse: ExpandFunction?,
         onReady: ExpandFunction?,
-        arrowClick: (() -> Boolean)?
+        arrowClick: (() -> Boolean)?,
+        overrideMeasure: Boolean
     ) {
+        if (overrideMeasure) {
+            resetMeasureDelegate()
+        }
         textView?.text = charSequence
         addExpandCollapseObserver(onExpand, onCollapse, onReady, arrowClick)
     }
@@ -246,6 +259,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
             if (state) {
                 bottomParams?.height = offset
                 bottomLayout?.layoutParams = bottomParams
+
                 onExpand?.invoke(bottomLayout)
             } else {
                 bottomParams?.height = bottomLayoutHeight

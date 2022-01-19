@@ -19,7 +19,7 @@ class ExpandMeasureDelegate(
     private val sourceTextView: TextView,
     private var collapseMaxLine: Int,
     private var lineSpacingMultiplier: Float,
-    private var onInit: (() -> Unit)? = null
+    private var onInit: ((Boolean) -> Unit)? = null
 ) {
 
     var realTotalHeight: Int = -1
@@ -74,7 +74,7 @@ class ExpandMeasureDelegate(
             sourceTextView.layoutParams = params
 
             // 回调用于更改最小盖度
-            onInit?.invoke()
+            onInit?.invoke(realTotalHeight <= measureCollapseHeight)
         }
     }
 }
