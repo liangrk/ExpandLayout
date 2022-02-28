@@ -62,14 +62,6 @@ class ExpandMeasureDelegate(
 
             copyTextView.setLineSpacing(spacingExtra, spacingMulti)
             copyTextView.setTextSize(textSizeUnit, textSize)
-            copyTextView.setPadding(
-                sourceTextView.paddingLeft,
-                sourceTextView.paddingTop,
-                sourceTextView.paddingRight,
-                sourceTextView.paddingBottom
-            )
-
-            // 设置最大行数
             copyTextView.setLines(collapseMaxLine)
 
             val width = sourceTextView.width
@@ -100,6 +92,7 @@ class ExpandMeasureDelegate(
 
             copyTextView.layoutParams = sourceTextView.layoutParams
             copyTextView.measure(widthMeasureSpec, heightMeasureSpec)
+            copyTextView.measuredHeight
 
             val measureTotalSpaceHeight = sourceTextViewLineCount * lineSpacingMultiplier
 
@@ -124,11 +117,8 @@ class ExpandMeasureDelegate(
             params.height = collapseHeight
             sourceTextView.layoutParams = params
 
-            val hideBottomLayout =
-                sourceTextView.lineCount + 1 <= collapseMaxLine || realTotalHeight < collapseHeight
-            ViewKits.log("真实的高度:$realTotalHeight, 折叠计算的高度是:$collapseHeight, 是否隐藏:$hideBottomLayout")
-            // 回调用于更改最小盖度, 当total<collapse时 隐藏底部
-            onInit?.invoke(hideBottomLayout)
+            // 回调用于更改最小盖度
+            onInit?.invoke(realTotalHeight <= heightMeasureSpec)
         }
     }
 
