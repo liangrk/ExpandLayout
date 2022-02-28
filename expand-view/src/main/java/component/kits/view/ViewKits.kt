@@ -1,6 +1,5 @@
 package component.kits.view
 
-import android.util.Log
 import android.widget.TextView
 
 /**
@@ -27,6 +26,6 @@ object ViewKits {
     }
 
     internal fun log(msg: String) {
-        Log.w("v-kits", msg)
+        // Log.w("v-kits", msg)
     }
 }
