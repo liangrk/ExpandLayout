@@ -126,10 +126,6 @@ class ExpandMeasureDelegate(
 
             collapseHeight = copyTextView.measuredHeight
 
-            val params = sourceTextView.layoutParams
-            params.height = collapseHeight
-            sourceTextView.layoutParams = params
-
             val calculatorHeight = ViewKits.measureTextViewHeight(
                 sourceTextView,
                 min(collapseMaxLine, sourceTextViewLineCount)            // 采用八行以内的高度对比
@@ -137,6 +133,10 @@ class ExpandMeasureDelegate(
                 (min(collapseMaxLine, sourceTextViewLineCount) * lineSpacingMultiplier).toDouble()
             ).setScale(0, BigDecimal.ROUND_UP)
                 .intValueExact()
+
+            val params = sourceTextView.layoutParams
+            params.height = calculatorHeight
+            sourceTextView.layoutParams = params
 
             // 回调用于更改最小盖度
             ViewKits.log("真实的总高度(运算的):$realTotalHeight, 其中间距总高度(含行数):${measureTotalSpaceHeight}, 行数:${sourceTextViewLineCount}")
