@@ -33,8 +33,26 @@ class ExpandMeasureDelegate(
         sourceTextView.post {
             copyTextView = TextView(sourceTextView.context)
 
-            val spacingExtra = sourceTextView.lineSpacingExtra
-            val spacingMulti = sourceTextView.lineSpacingMultiplier
+            val spacingExtra = if (sourceLineSpacingExtra == -1f) {
+                sourceTextView.lineSpacingExtra.also {
+                    sourceLineSpacingExtra = it
+                }
+            } else {
+                sourceLineSpacingExtra
+            }
+
+            val spacingMulti = if (sourceLineSpacingMultiplier == -1f) {
+                sourceTextView.lineSpacingMultiplier.also {
+                    sourceLineSpacingMultiplier = it
+                }
+            } else {
+                sourceLineSpacingMultiplier
+            }
+
+            if (sourceTextViewLineCount == -1) {
+                sourceTextViewLineCount = sourceTextView.lineCount
+            }
+
             val textSize = sourceTextView.textSize
             val textSizeUnit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 sourceTextView.textSizeUnit
@@ -62,17 +80,43 @@ class ExpandMeasureDelegate(
                     .setScale(0, BigDecimal.ROUND_UP)
                     .intValueExact()
 
-            val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-            val heightMeasureSpec =
+            val widthMeasureSpec = if (sourceMeasureWidth == -1) {
+                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+                    .also {
+                        sourceMeasureWidth = it
+                    }
+            } else {
+                sourceMeasureWidth
+            }
+
+            val heightMeasureSpec = if (sourceMeasureHeight == -1) {
                 View.MeasureSpec.makeMeasureSpec(measureCollapseHeight, View.MeasureSpec.AT_MOST)
+                    .also {
+                        sourceMeasureHeight = it
+                    }
+            } else {
+                sourceMeasureHeight
+            }
+
             copyTextView.layoutParams = sourceTextView.layoutParams
             copyTextView.measure(widthMeasureSpec, heightMeasureSpec)
 
-            val measureTotalSpaceHeight = sourceTextView.lineCount * lineSpacingMultiplier
-            realTotalHeight = ViewKits.measureTextViewHeight(sourceTextView) + BigDecimal.valueOf(
-                measureTotalSpaceHeight.toDouble()
-            ).setScale(0, BigDecimal.ROUND_UP)
-                .intValueExact()
+            val measureTotalSpaceHeight = sourceTextViewLineCount * lineSpacingMultiplier
+
+            realTotalHeight = if (sourceTotalHeight == -1) {
+                ViewKits.measureTextViewHeight(
+                    sourceTextView,
+                    sourceTextViewLineCount
+                ) + BigDecimal.valueOf(
+                    measureTotalSpaceHeight.toDouble()
+                ).setScale(0, BigDecimal.ROUND_UP)
+                    .intValueExact()
+                    .also {
+                        sourceTotalHeight = it
+                    }
+            } else {
+                sourceTotalHeight
+            }
 
             collapseHeight = copyTextView.measuredHeight
 
@@ -86,5 +130,16 @@ class ExpandMeasureDelegate(
             // 回调用于更改最小盖度, 当total<collapse时 隐藏底部
             onInit?.invoke(hideBottomLayout)
         }
+    }
+
+    companion object {
+        var sourceTextViewLineCount: Int = -1
+        var sourceLineSpacingExtra: Float = -1f
+        var sourceLineSpacingMultiplier: Float = -1f
+
+        var sourceMeasureWidth: Int = -1
+        var sourceMeasureHeight = -1
+
+        var sourceTotalHeight = -1
     }
 }
