@@ -115,11 +115,13 @@ class ExpandFrameLayout @JvmOverloads constructor(
                     bottomLayout?.setOnClickListener(safeListener)
                 }
             }
-            bottomLayout?.post {
-                bottomLayoutHeight = bottomLayout?.height ?: 0
-            }
         } catch (e: Throwable) {
             ViewKits.log("$this expandBottomLayoutRes inflate err:${e.message} trace:${e.printStackTrace()}")
+        } finally {
+            bottomLayout?.post {
+                bottomLayoutHeight = bottomLayout?.height ?: 0
+                ViewKits.log("bottomLayout-height:$bottomLayoutHeight, bottomLayoutMeasureHeight:${bottomLayout?.measuredHeight}")
+            }
         }
 
         measureDelegate =
@@ -170,6 +172,7 @@ class ExpandFrameLayout @JvmOverloads constructor(
         overrideMeasure: Boolean
     ) {
         if (overrideMeasure) {
+            ViewKits.log("setText-call override measure")
             resetMeasureDelegate()
         }
         textView?.text = charSequence
@@ -231,6 +234,16 @@ class ExpandFrameLayout @JvmOverloads constructor(
         if (onIntercept) return@OnClickListener
         onIntercept = true
         val params = textView!!.layoutParams
+
+        if (bottomLayout != null && bottomLayoutHeight == 0) {
+            ViewKits.log("监听器中底部view高度获取失败")
+            bottomLayout!!.measure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+            )
+            bottomLayoutHeight = bottomLayout!!.height
+            ViewKits.log("监听器中底部bottom重新测量值:$bottomLayoutHeight, height:${bottomLayout!!.height}")
+        }
 
         // 底部bottom偏移量
         val offset = if (configBottomLayoutHeight == -1) {
